@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Summarizer</title>
+</head>
+
+<body>
+
+<h2>Upload PDF</h2>
+
+<form action="/summarize" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+
+<hr>
+
+<h2>Last 5 documents</h2>
+
+<div>
+    {% for item in history %}
+        <div style="margin-bottom: 12px; padding: 8px; border: 1px solid #ddd;">
+            <b>{{ item.file_name }}</b><br>
+            <span>Status: {{ item.status }}</span><br>
+
+            {% if item.result %}
+                <p>{{ item.result }}</p>
+            {% endif %}
+
+            {% if item.error %}
+                <p style="color:red;">Error: {{ item.error }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
