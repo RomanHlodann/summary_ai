@@ -32,8 +32,23 @@ class ParsedDocument:
     def image_heavy_pages(self) -> list[int]:
         return [p.page_num for p in self.pages if p.vision_caption is not None]
 
-    def to_chunks(self, pages_per_chunk: int = 10) -> list[str]:
-        return [
-            "\n\n".join(p.to_text_block() for p in self.pages[i : i + pages_per_chunk])
-            for i in range(0, len(self.pages), pages_per_chunk)
-        ]
+    def to_chunks(self, max_chars: int = 12000) -> list[str]:
+        chunks = []
+        current_chunk = []
+        current_size = 0
+
+        for page in self.pages:
+            text = page.to_text_block()
+
+            if current_size + len(text) > max_chars and current_chunk:
+                chunks.append("\n\n".join(current_chunk))
+                current_chunk = []
+                current_size = 0
+
+            current_chunk.append(text)
+            current_size += len(text)
+
+        if current_chunk:
+            chunks.append("\n\n".join(current_chunk))
+
+        return chunks
