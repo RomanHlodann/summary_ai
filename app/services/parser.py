@@ -15,8 +15,6 @@ from app.schemas.document_result import PageResult, ParsedDocument
 
 logger = logging.getLogger(__name__)
 
-TEXT_YIELD_THRESHOLD = 100
-
 
 class PDFParser:
     def __init__(self, client: OpenAIClient) -> None:

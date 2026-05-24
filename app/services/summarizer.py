@@ -5,12 +5,10 @@ import logging
 
 from app.services.openai import OpenAIClient
 from app.utils.prompts import CHUNK_SYSTEM, FINAL_SYSTEM
+from app.utils.consts import CHUNK_MODEL, FINAL_MODEL
 
 
 logger = logging.getLogger(__name__)
-
-CHUNK_MODEL = "gpt-4o-mini"
-FINAL_MODEL = "gpt-4o-mini"
 
 
 class Summarizer:
