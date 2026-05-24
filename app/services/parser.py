@@ -42,25 +42,33 @@ class PDFParser:
             filename, doc.total_pages, len(doc.image_heavy_pages),
         )
         return doc
- 
+
     async def _parse_page(
         self,
         fitz_page: fitz.Page,
         plumber_page: pdfplumber.page.Page,
         page_num: int,
     ) -> PageResult:
+
         result = PageResult(page_num=page_num)
- 
+
         try:
-            result.text = self._text.extract(fitz_page)
+            text = self._text.extract(fitz_page)
+            result.text = text
             result.tables_md = self._tables.extract(plumber_page)
         except Exception as exc:
             logger.warning("Page %d: extraction failed: %s", page_num, exc)
- 
-        if len(result.text) < TEXT_YIELD_THRESHOLD:
+            text = ""
+
+        has_images = bool(fitz_page.get_images(full=True))
+        text_len = len(text.strip())
+        low_text = text_len < 300
+        should_use_vision = has_images and low_text
+
+        if should_use_vision:
             try:
                 result.vision_caption = await self._vision.extract(fitz_page)
             except Exception as exc:
                 logger.warning("Page %d: vision failed: %s", page_num, exc)
- 
+
         return result
