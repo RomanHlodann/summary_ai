@@ -1,18 +1,25 @@
 from __future__ import annotations
 
 import base64
-
 import fitz
 
 from app.services.openai import OpenAIClient
 
 RENDER_DPI = 150
-VISION_MODEL = "gpt-4o"
-VISION_PROMPT = (
-    "Describe the content of this document page concisely. "
-    "Include any text, tables, charts, or diagrams you see. "
-    "Focus on information content, not layout."
-)
+VISION_MODEL = "gpt-4o-mini"
+VISION_PROMPT = """
+Extract all visible content from this document page.
+
+Do NOT summarize or interpret anything.
+
+Return the content as faithfully as possible, including:
+- All readable text
+- Table content and values
+- Chart labels, axes, and numbers
+- Diagram annotations
+
+If the page contains visual elements, describe them only in a factual way (what is shown), not what it means.
+"""
 
 
 class VisionExtractor:
